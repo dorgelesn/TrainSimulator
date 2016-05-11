@@ -1,3 +1,20 @@
+
+# Created by https://www.gitignore.io/api/linux,c
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+
+### C ###
 # Object files
 *.o
 *.ko
@@ -30,3 +47,4 @@
 
 # Debug files
 *.dSYM/
+*.su
