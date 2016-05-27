@@ -29,11 +29,9 @@ void garer ()
   else{
     printf("le coiffeur dort car pas de Train \n");
     pthread_cond_wait(&dormir, &mutex);
-
-     // dit à un train de s'installer sur le fauteuil
+     // dit à un train de se garer
   }
   pthread_mutex_unlock(&mutex);
-
 }
 
 void train(int i)
@@ -55,15 +53,10 @@ void train(int i)
   }
   else{
     printf("Le train %d ne trouve pas de place\n", i);
-  }
-
-
 }
-
 
 void * fonc_coiffeur()
 {
-
   while (1)  {
     garer();
     /* temps de coiffure d'un train */
