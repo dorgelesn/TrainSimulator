@@ -48,3 +48,7 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Other
+*.odt
+*.pdf

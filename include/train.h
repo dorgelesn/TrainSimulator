@@ -1,8 +1,7 @@
-#include <pthread.h>
-
 typedef struct Train{
   int id;
-  Direction direction;
+  int sens;
+  int priorite;
   Voie position;
 }Train;
 
