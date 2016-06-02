@@ -14,5 +14,6 @@ typedef struct {
 }Train;
 
 void fonc_train(Train* trn);
+Train* init_Train();
 
 #endif

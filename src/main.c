@@ -17,10 +17,22 @@ int main(int argc, char const *argv[]) {
 
   //Initialisation tid
   tabVoie = malloc(sizeof(Voie)*NB_VOIE);
+  init_voieA(&tabVoie[0]);
+  init_voieB(&tabVoie[1]);
+  init_voieC(&tabVoie[2]);
+  init_voieD(&tabVoie[3]);
+  init_voieTGV(&tabVoie[4]);
+  init_voieMG(&tabVoie[5]);
+  init_voieMD(&tabVoie[6]);
+  init_voieGL(&tabVoie[7]);
+  init_voieTUN(&tabVoie[8]);
+  init_voieLIGNE(&tabVoie[9]);
+
 
   tid = malloc((nbTrain+NB_VOIE)*sizeof(pthread_t));
   for (int i = 0; i < NB_VOIE; i++) {
-    pthread_create(&tid[i],0,(void *(*)())func_voie,0); //voir pour les arguments
+    pthread_create(&tid[i],0,(void *(*)())func_voie,&tabVoie[i]); //voir pour les arguments
+    usleep(5000);
 
   }
   for (int i = NB_VOIE; i < nbTrain+NB_VOIE; i++) {
