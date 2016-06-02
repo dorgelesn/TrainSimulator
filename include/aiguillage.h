@@ -1,4 +1,9 @@
-typedef struct Aiguillage{
+#ifndef __AIGUILLAGE__
+#define __AIGUILLAGE__
+
+typedef struct{
   int id;
-  Voie[] controlVoie;
+  int autorisation;
 }Aiguillage;
+
+#endif

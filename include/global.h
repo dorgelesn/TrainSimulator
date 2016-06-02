@@ -4,9 +4,15 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
-#include "../include/aiguillage.h"
-#include "../include/voie.h"
-#include "../include/train.h"
-#include "../include/aiguillage.h"
+
+#include "aiguillage.h"
+#include "voie.h"
+#include "train.h"
+
+#define NB_VOIE 10
+#define NB_AIGUILLAGE 4
 
 int nbTrain;
+Voie* tabVoie;
+pthread_t* tid;
+pthread_cond_t dodoVoieA;
