@@ -5,48 +5,40 @@
 # Indiquer le compilateur
 CXX= gcc
 
+# Les fichiers sources de l'application
+SRCDIR=src
+SRC=$(wildcard $(SRCDIR)/*.c)
+
+OBJDIR=bin
+OBJ=$(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+	INCLUDES_DIR=include
+
+EXEC= trainsimulator
+
 # Les chemins ou se trouvent les fichiers a inclure
-INCLUDE= -I/usr/include
+INCLUDE= -I$(INCLUDES_DIR)
 
 # Options de compilation.
-CXXFLAGS=  $(INCLUDES_DIR) -c -Wno-deprecated
-
-# Les chemins ou se trouvent les librairies
-LIBRARY_PATH= -L/usr/lib
-
-# Options pour le linker.
-LDFLAGS= $(LIBRARY_PATH) -o ./bin
+CXXFLAGS=  $(INCLUDE) -c 
 
 # Les librairies avec lesquelle on va effectueller l'edition de liens
 LIBS=-lpthread
 
-# Les fichiers sources de l'application
-SFILES=$(wildcard ./src/*.c)
-
-OFILES=$(SFILES:.c=.o)
-EXEC= ./bin/trainsimulator
 
 #-----------
 # LES CIBLES
 #-----------
 all : $(EXEC)
 
-$(EXEC) :  $(SFILES:.c=.o)
-	$(CXX) $(LDFLAGS) trainsimulator $(SFILES:.c=.o) $(LIBS)
+$(EXEC) :  $(OBJ)
+	$(CXX) -o $(OBJDIR)/$@ $^ $(CXXFLAGS) $(LIBS)
 
+$(OBJDIR)/%.o : $(SRCDIR)/%.c $(INCLUDES_DIR)/*.h
+	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
 .PHONY : clean mrproper
 clean:
-	rm -rf $(OFILES)
+	rm -rf $(OBJDIR)/*
 
-mrproper: clean
-	rm -rf $(EXEC)
-
-run : clean
-	./bin/main
-
-#---------------------------------
-# REGLES DE COMPILATION IMPLICITES
-#---------------------------------
-%.o : %.c
-	$(CXX) -o $@ -c $< $(CXXFLAGS)
+run :
+	./bin/$(EXEC)
