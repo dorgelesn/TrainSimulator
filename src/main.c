@@ -1,6 +1,8 @@
 #include "../include/global.h"
 
 int main(int argc, char const *argv[]) {
+  int i;
+
   if (argc == 1) {
     nbTrain = 10;
   }
@@ -28,19 +30,22 @@ int main(int argc, char const *argv[]) {
   init_voieTUN(&tabVoie[8]);
   init_voieLIGNE(&tabVoie[9]);
 
+  tid = malloc((nbTrain)*sizeof(pthread_t));
 
-  tid = malloc((nbTrain+NB_VOIE)*sizeof(pthread_t));
-  for (int i = 0; i < NB_VOIE; i++) {
-    pthread_create(&tid[i],0,(void *(*)())func_voie,&tabVoie[i]); //voir pour les arguments
+  for (i = 0; i < (nbTrain); i++) {
+    pthread_create(&tid[i],0,(void *(*)())func_train, init_Train(i));
     usleep(5000);
-
   }
-  for (int i = NB_VOIE; i < nbTrain+NB_VOIE; i++) {
 
-    pthread_create(&tid[i],0,(void *(*)())fonc_train,init_Train(i));
-    usleep(5000);
+  for (i = 0; i < (nbTrain); i++) {
+    pthread_join(tid[i],NULL);
   }
 
   //penser à delete les malloc
+  /*for (i = NB_VOIE; i < (NB_VOIE+nbTrain); i++) {
+    free(&tid[i]);
+  }*/
+  //free(&tabVoie);
+  //free(&tid);
   exit(0);
 }
