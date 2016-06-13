@@ -3,10 +3,15 @@
 
 typedef struct struct_voie{
   int id;
+  bool reserve;
   int nbTrainAct;
   int nbMaxTrain;
+  int nbVoieLeft;
+  int nbVoieRight;
   struct struct_voie** voieLeft;
   struct struct_voie** voieRight;
+
+  int currentSens;
   int sens;
     //  -1 = vers la gauche
     //  0 = dans les 2 sens
@@ -19,6 +24,7 @@ typedef struct struct_voie{
 }Voie;
 
 void func_voie(Voie* v);
+
 void init_voieA(Voie* voie); // Voie 0
 void init_voieB(Voie* voie); // Voie 1
 void init_voieC(Voie* voie); // Voie 2
