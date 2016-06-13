@@ -11,7 +11,7 @@ SRC=$(wildcard $(SRCDIR)/*.c)
 
 OBJDIR=bin
 OBJ=$(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-	INCLUDES_DIR=include
+INCLUDES_DIR=include
 
 EXEC= trainsimulator
 
@@ -19,7 +19,7 @@ EXEC= trainsimulator
 INCLUDE= -I$(INCLUDES_DIR)
 
 # Options de compilation.
-CXXFLAGS=  $(INCLUDE) -c 
+CXXFLAGS=  $(INCLUDE)
 
 # Les librairies avec lesquelle on va effectueller l'edition de liens
 LIBS=-lpthread
@@ -36,9 +36,9 @@ $(EXEC) :  $(OBJ)
 $(OBJDIR)/%.o : $(SRCDIR)/%.c $(INCLUDES_DIR)/*.h
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
-.PHONY : clean mrproper
+.PHONY : clean
 clean:
 	rm -rf $(OBJDIR)/*
 
-run :
+run : clean all
 	./bin/$(EXEC)

@@ -36,12 +36,8 @@ int main(int argc, char const *argv[]) {
 
   }
   for (int i = NB_VOIE; i < nbTrain+NB_VOIE; i++) {
-    Train* train_train;
-    train_train->id = i;
-    train_train->sens = -1;
-    train_train->priorite = 0;
 
-    pthread_create(&tid[i],0,(void *(*)())fonc_train,train_train);
+    pthread_create(&tid[i],0,(void *(*)())fonc_train,init_Train(i));
     usleep(5000);
   }
 
