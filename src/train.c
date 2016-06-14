@@ -2,13 +2,10 @@
 
 void func_train(Train* trn){
   printf("Création du Train %d qui part de %d et va %d\n",trn->id, trn->startPos->id,trn->sens);
+
   while (trn->position != trn->endPos) {
     move(trn);
-  }
-  printf("Je suis arrivé\n");
-  pthread_exit(NULL);
-  /*while (getNextVoie != NULL) {
-    if (trn->position == &tabVoie[9]) {
+    /*if (trn->position == &tabVoie[9]) {
       if (canStartFromLigne(trn)) {
         move(trn);
       }
@@ -38,29 +35,39 @@ void func_train(Train* trn){
       if (canStartFromGare(trn)) {
         move(trn);
       }
-    }
+    }*/
 
-
-    if (trn->position->id == trn->endPos->id) {
+    /*if (trn->position->id == trn->endPos->id) {
       printf("End point free\n");
       pthread_exit(NULL);
-    }
-  }*/
+    }*/
+  }
+  pthread_mutex_lock(&mutex);
+  printf("Train arrivé\n");
+  trn->position->nbTrainAct--;
+  pthread_cond_signal(&trn->position->voieLibre);
+  pthread_mutex_unlock(&mutex);
+
+  pthread_exit(NULL);
 }
 
 void move(Train* train_train_quotidien){
   pthread_mutex_lock(&mutex);
-  Voie* onTheWay = getNextVoieTRAIN(train_train_quotidien);
+  Voie* nextVoie = getNextVoieTRAIN(train_train_quotidien);
 
-  if (onTheWay->reserve) {
-    printf("Le train n°%d attend que la voie %d soit libre\n", train_train_quotidien->id, onTheWay->id);
-  }else{
-    pthread_cond_signal(&voieA);
-    printf("Départ !!\n");
-    train_train_quotidien->position = onTheWay;
-    printf("Le train %d est sur la voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
-    usleep(5000);
+  if (nextVoie->nbTrainAct == nextVoie->nbMaxTrain) {
+    printf("Le train n°%d attend que la voie %d soit libre\n", train_train_quotidien->id, nextVoie->id);
+    pthread_cond_wait(&nextVoie->voieLibre,&mutex);
   }
+  printf("Le train n°%d départ de la voie %d pour aller vers %d\n", train_train_quotidien->id, train_train_quotidien->position->id, nextVoie->id);
+  train_train_quotidien->position->nbTrainAct--;
+  //train_train_quotidien->position->reserve = false;
+  pthread_cond_signal(&train_train_quotidien->position->voieLibre);
+  train_train_quotidien->position = nextVoie;
+  nextVoie->nbTrainAct++;
+  printf("Le train %d est sur la voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
+  usleep(5000);
+
   pthread_mutex_unlock(&mutex);
 }
 
@@ -157,14 +164,16 @@ bool canStartFromGare(Train* train_train_quotidien){
 Train* init_Train(int i){
   Train* train_train = malloc(sizeof(Train));
   int random = rand()%3+1;
-  printf("%d\n", random);
+  random = 3;
+  //printf("%d\n", random);
   switch (random) {
     case 1:
     {
+      //Train de marchandise qui part de la voie A et va vers la voie LIGNE
       train_train->startPos = &tabVoie[0];
       train_train->endPos = &tabVoie[9];
       train_train->position = calloc(1,sizeof(Voie));
-      train_train->position = train_train->startPos;
+      train_train->position = &tabVoie[10];
       train_train->id = i;
       train_train->sens = 1;
       train_train->priorite = 2;
@@ -173,10 +182,11 @@ Train* init_Train(int i){
 
     case 2:
     {
+      //Train TGV qui part de la voie C et va vers la voie LIGNE
       train_train->startPos = &tabVoie[2];
       train_train->endPos = &tabVoie[9];
       train_train->position = calloc(1,sizeof(Voie));
-      train_train->position = train_train->startPos;
+      train_train->position = &tabVoie[11];
       train_train->id = i;
       train_train->sens = 1;
       train_train->priorite = 0;
@@ -185,13 +195,14 @@ Train* init_Train(int i){
 
     case 3:
     {
+      //Train TGV qui part de la voie LIGNE et va vers la voie D
       train_train->startPos = &tabVoie[9];
-      train_train->endPos = &tabVoie[1];
+      train_train->endPos = &tabVoie[3];
       train_train->position = calloc(1,sizeof(Voie));
-      train_train->position = train_train->startPos;
+      train_train->position = &tabVoie[12];
       train_train->id = i;
       train_train->sens = -1;
-      train_train->priorite = 0;
+      train_train->priorite = 0;//(rand()%3);
     }
     break;
 
