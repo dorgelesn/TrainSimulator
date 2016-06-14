@@ -4,6 +4,8 @@
 typedef struct struct_voie{
   int id;
   bool reserve;
+  pthread_cond_t voieLibre;
+
   int nbTrainAct;
   int nbMaxTrain;
   int nbVoieLeft;

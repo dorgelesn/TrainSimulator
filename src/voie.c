@@ -8,6 +8,8 @@ void func_voie(Voie* v){
 void init_voieA(Voie* v){
   v->id = 0;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 1;
   v->voieLeft = NULL;
@@ -27,6 +29,8 @@ void init_voieA(Voie* v){
 void init_voieB(Voie* v){
   v->id = 1;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 1;
   v->voieLeft = NULL;
@@ -46,6 +50,8 @@ void init_voieB(Voie* v){
 void init_voieC(Voie* v){
   v->id = 2;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 1;
   v->voieLeft = NULL;
@@ -65,6 +71,8 @@ void init_voieC(Voie* v){
 void init_voieD(Voie* v){
   v->id = 3;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 1;
   v->voieLeft = NULL;
@@ -84,6 +92,8 @@ void init_voieD(Voie* v){
 void init_voieTGV(Voie* v){
   v->id = 4;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 5;
   v->voieLeft = malloc(4*sizeof(Voie*));
@@ -105,6 +115,8 @@ void init_voieTGV(Voie* v){
 void init_voieMG(Voie* v){
   v->id = 5;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 5;
   v->voieLeft = malloc(4*sizeof(Voie*));
@@ -127,6 +139,8 @@ void init_voieMG(Voie* v){
 void init_voieMD(Voie* v){
   v->id = 6;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 5;
   v->voieLeft = malloc(4*sizeof(Voie*));
@@ -149,6 +163,8 @@ void init_voieMD(Voie* v){
 void init_voieGL(Voie* v){
   v->id = 7;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 5;
   v->voieLeft = malloc(4*sizeof(Voie*));
@@ -171,6 +187,8 @@ void init_voieGL(Voie* v){
 void init_voieTUN(Voie* v){
   v->id = 8;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 1;
   v->voieLeft = malloc(4*sizeof(Voie*));
@@ -194,6 +212,8 @@ void init_voieTUN(Voie* v){
 void init_voieLIGNE(Voie* v){
   v->id = 9;
   v->reserve = false;
+  pthread_cond_init(&v->voieLibre, NULL);
+
   v->nbTrainAct = 0;
   v->nbMaxTrain = 1;
   v->voieLeft = malloc(sizeof(Voie*));
