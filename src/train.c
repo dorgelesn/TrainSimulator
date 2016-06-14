@@ -1,8 +1,13 @@
 #include "../include/global.h"
 
 void func_train(Train* trn){
-  printf("Création du Train %d\n",trn->id);
-  while (getNextVoie != NULL) {
+  printf("Création du Train %d qui part de %d et va %d\n",trn->id, trn->startPos->id,trn->sens);
+  while (trn->position != trn->endPos) {
+    move(trn);
+  }
+  printf("Je suis arrivé\n");
+  pthread_exit(NULL);
+  /*while (getNextVoie != NULL) {
     if (trn->position == &tabVoie[9]) {
       if (canStartFromLigne(trn)) {
         move(trn);
@@ -40,12 +45,23 @@ void func_train(Train* trn){
       printf("End point free\n");
       pthread_exit(NULL);
     }
-  }
+  }*/
 }
 
 void move(Train* train_train_quotidien){
-  train_train_quotidien->position = getNextVoieTRAIN(train_train_quotidien);
-  printf("Le train %d est sur la voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
+  pthread_mutex_lock(&mutex);
+  Voie* onTheWay = getNextVoieTRAIN(train_train_quotidien);
+
+  if (onTheWay->reserve) {
+    printf("Le train n°%d attend que la voie %d soit libre\n", train_train_quotidien->id, onTheWay->id);
+  }else{
+    pthread_cond_signal(&voieA);
+    printf("Départ !!\n");
+    train_train_quotidien->position = onTheWay;
+    printf("Le train %d est sur la voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
+    usleep(5000);
+  }
+  pthread_mutex_unlock(&mutex);
 }
 
 Voie* getNextVoieTRAIN(Train* train_train_quotidien) {
@@ -140,13 +156,45 @@ bool canStartFromGare(Train* train_train_quotidien){
 
 Train* init_Train(int i){
   Train* train_train = malloc(sizeof(Train));
-  train_train->startPos = &tabVoie[9];
-  train_train->endPos = &tabVoie[1];
-  train_train->position = calloc(1,sizeof(Voie));
-  train_train->position = &tabVoie[9];
-  train_train->id = i;
-  train_train->sens = -1;
-  train_train->priorite = 0;
+  int random = rand()%3+1;
+  printf("%d\n", random);
+  switch (random) {
+    case 1:
+    {
+      train_train->startPos = &tabVoie[0];
+      train_train->endPos = &tabVoie[9];
+      train_train->position = calloc(1,sizeof(Voie));
+      train_train->position = train_train->startPos;
+      train_train->id = i;
+      train_train->sens = 1;
+      train_train->priorite = 2;
+    }
+    break;
 
+    case 2:
+    {
+      train_train->startPos = &tabVoie[2];
+      train_train->endPos = &tabVoie[9];
+      train_train->position = calloc(1,sizeof(Voie));
+      train_train->position = train_train->startPos;
+      train_train->id = i;
+      train_train->sens = 1;
+      train_train->priorite = 0;
+    }
+    break;
+
+    case 3:
+    {
+      train_train->startPos = &tabVoie[9];
+      train_train->endPos = &tabVoie[1];
+      train_train->position = calloc(1,sizeof(Voie));
+      train_train->position = train_train->startPos;
+      train_train->id = i;
+      train_train->sens = -1;
+      train_train->priorite = 0;
+    }
+    break;
+
+  }
   return train_train;
 }

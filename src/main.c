@@ -1,5 +1,19 @@
 #include "../include/global.h"
 
+void initMutex(){
+  pthread_mutex_init(&mutex, NULL);
+  pthread_cond_init(&voieA, NULL);
+  pthread_cond_init(&voieB, NULL);
+  pthread_cond_init(&voieC, NULL);
+  pthread_cond_init(&voieD, NULL);
+  pthread_cond_init(&voieTGV, NULL);
+  pthread_cond_init(&voieMG, NULL);
+  pthread_cond_init(&voieMD, NULL);
+  pthread_cond_init(&voieGL, NULL);
+  pthread_cond_init(&voieTUN, NULL);
+  pthread_cond_init(&voieLIGNE, NULL);
+}
+
 int main(int argc, char const *argv[]) {
   int i;
 
@@ -10,12 +24,7 @@ int main(int argc, char const *argv[]) {
     nbTrain = atoi(argv[1]);
   }
 
-  /*Train* tab[NB_VOIE];
-  for (int i = 0; i < NB_VOIE; i++) {
-    tab[i] = malloc(sizeof(Train));
-  }
-  tab[1]->id = 0;
-  printf("%d\n", tab[1]->id);*/
+  initMutex();
 
   //Initialisation tid
   tabVoie = malloc(sizeof(Voie)*NB_VOIE);
@@ -34,7 +43,7 @@ int main(int argc, char const *argv[]) {
 
   for (i = 0; i < (nbTrain); i++) {
     pthread_create(&tid[i],0,(void *(*)())func_train, init_Train(i));
-    usleep(5000);
+    //usleep(5000);
   }
 
   for (i = 0; i < (nbTrain); i++) {
