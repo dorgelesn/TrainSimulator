@@ -37,4 +37,7 @@ void init_voieMD(Voie* voie); // Voie 6
 void init_voieGL(Voie* voie); // Voie 7
 void init_voieTUN(Voie* voie); // Voie 8
 void init_voieLIGNE(Voie* voie); // Voie 9
+void init_voieStartA(Voie* v); // Voie 10
+void init_voieStartC(Voie* v); // Voie 11
+void init_voieStartLIGNE(Voie* v); // Voie 12
 #endif
