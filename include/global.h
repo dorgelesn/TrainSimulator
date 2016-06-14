@@ -11,8 +11,9 @@
 #include "voie.h"
 #include "train.h"
 
-#define NB_VOIE 10
+#define NB_VOIE 13
 #define NB_AIGUILLAGE 4
+#define MAX_TRAIN 10000000
 
 int nbTrain;
 Voie* tabVoie;

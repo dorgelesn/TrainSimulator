@@ -2,16 +2,6 @@
 
 void initMutex(){
   pthread_mutex_init(&mutex, NULL);
-  pthread_cond_init(&voieA, NULL);
-  pthread_cond_init(&voieB, NULL);
-  pthread_cond_init(&voieC, NULL);
-  pthread_cond_init(&voieD, NULL);
-  pthread_cond_init(&voieTGV, NULL);
-  pthread_cond_init(&voieMG, NULL);
-  pthread_cond_init(&voieMD, NULL);
-  pthread_cond_init(&voieGL, NULL);
-  pthread_cond_init(&voieTUN, NULL);
-  pthread_cond_init(&voieLIGNE, NULL);
 }
 
 int main(int argc, char const *argv[]) {
@@ -38,6 +28,9 @@ int main(int argc, char const *argv[]) {
   init_voieGL(&tabVoie[7]);
   init_voieTUN(&tabVoie[8]);
   init_voieLIGNE(&tabVoie[9]);
+  init_voieStartA(&tabVoie[10]);
+  init_voieStartC(&tabVoie[11]);
+  init_voieStartLIGNE(&tabVoie[12]);
 
   tid = malloc((nbTrain)*sizeof(pthread_t));
 
