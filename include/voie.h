@@ -4,6 +4,7 @@
 typedef struct struct_voie{
   int id;
   bool reserve;
+  bool canStop;
   pthread_cond_t voieLibre;
 
   int nbTrainAct;

@@ -8,6 +8,7 @@ void func_voie(Voie* v){
 void init_voieA(Voie* v){
   v->id = 0;
   v->reserve = false;
+  v->canStop = false;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -31,6 +32,7 @@ void init_voieA(Voie* v){
 void init_voieB(Voie* v){
   v->id = 1;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -54,6 +56,7 @@ void init_voieB(Voie* v){
 void init_voieC(Voie* v){
   v->id = 2;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -76,7 +79,7 @@ void init_voieC(Voie* v){
 
 void init_voieD(Voie* v){
   v->id = 3;
-  v->reserve = false;
+  v->reserve = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -101,6 +104,7 @@ void init_voieD(Voie* v){
 void init_voieTGV(Voie* v){
   v->id = 4;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -123,6 +127,7 @@ void init_voieTGV(Voie* v){
 void init_voieMG(Voie* v){
   v->id = 5;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -145,6 +150,7 @@ void init_voieMG(Voie* v){
 void init_voieMD(Voie* v){
   v->id = 6;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -170,6 +176,7 @@ void init_voieMD(Voie* v){
 void init_voieGL(Voie* v){
   v->id = 7;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -195,6 +202,7 @@ void init_voieGL(Voie* v){
 void init_voieTUN(Voie* v){
   v->id = 8;
   v->reserve = false;
+  v->canStop = false;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -220,6 +228,7 @@ void init_voieTUN(Voie* v){
 void init_voieLIGNE(Voie* v){
   v->id = 9;
   v->reserve = false;
+  v->canStop = false;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -241,6 +250,7 @@ void init_voieLIGNE(Voie* v){
 void init_voieStartA(Voie* v){
   v->id = 10;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -261,6 +271,7 @@ void init_voieStartA(Voie* v){
 void init_voieStartC(Voie* v){
   v->id = 11;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
@@ -281,6 +292,7 @@ void init_voieStartC(Voie* v){
 void init_voieStartLIGNE(Voie* v){
   v->id = 12;
   v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
