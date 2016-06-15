@@ -13,8 +13,9 @@ void init_voieA(Voie* v){
 
   v->nbTrainAct = 0;
   v->nbMaxTrain = 1;
-  v->voieLeft = NULL;
-  v->nbVoieLeft = 0;
+  v->nbVoieLeft = 1;
+  v->voieLeft = malloc((v->nbVoieRight)*sizeof(Voie*));
+  v->voieLeft[0] = &tabVoie[10];
 
   v->nbVoieRight = 4;
   v->voieRight = malloc((v->nbVoieRight)*sizeof(Voie*));
@@ -60,9 +61,10 @@ void init_voieC(Voie* v){
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
-  v->nbMaxTrain = 1;
-  v->voieLeft = NULL;
-  v->nbVoieLeft = 0;
+  v->nbMaxTrain = 3;
+  v->nbVoieLeft = 1;
+  v->voieLeft = malloc((v->nbVoieRight)*sizeof(Voie*));
+  v->voieLeft[0] = &tabVoie[11];
 
   v->nbVoieRight = 4;
   v->voieRight = malloc((v->nbVoieRight)*sizeof(Voie*));
@@ -79,11 +81,12 @@ void init_voieC(Voie* v){
 
 void init_voieD(Voie* v){
   v->id = 3;
-  v->reserve = true;
+  v->reserve = false;
+  v->canStop = true;
   pthread_cond_init(&v->voieLibre, NULL);
 
   v->nbTrainAct = 0;
-  v->nbMaxTrain = 1;
+  v->nbMaxTrain = 3;
 
   v->nbVoieLeft = 0;
   v->voieLeft = NULL;
@@ -109,10 +112,13 @@ void init_voieTGV(Voie* v){
 
   v->nbTrainAct = 0;
   v->nbMaxTrain = 5;
-  v->nbVoieLeft = 2;
+  v->nbVoieLeft = 4;
   v->voieLeft = malloc((v->nbVoieLeft)*sizeof(Voie*));
-  v->voieLeft[0] = &tabVoie[1];
-  v->voieLeft[1] = &tabVoie[3];
+  v->voieLeft[0] = &tabVoie[0];
+  v->voieLeft[1] = &tabVoie[1];
+  v->voieLeft[2] = &tabVoie[2];
+  v->voieLeft[3] = &tabVoie[3];
+
 
   v->nbVoieRight = 1;
   v->voieRight = malloc(sizeof(Voie*));
@@ -132,16 +138,18 @@ void init_voieMG(Voie* v){
 
   v->nbTrainAct = 0;
   v->nbMaxTrain = 5;
-  v->nbVoieLeft = 2;
+  v->nbVoieLeft = 4;
   v->voieLeft = malloc((v->nbVoieLeft)*sizeof(Voie*));
-  v->voieLeft[0] = &tabVoie[1];
-  v->voieLeft[1] = &tabVoie[3];
+  v->voieLeft[0] = &tabVoie[0];
+  v->voieLeft[1] = &tabVoie[1];
+  v->voieLeft[2] = &tabVoie[2];
+  v->voieLeft[3] = &tabVoie[3];
 
   v->nbVoieRight = 1;
   v->voieRight = malloc(sizeof(Voie*));
   v->voieRight[0] = &tabVoie[8];
 
-  v->sens = v->currentSens = 0;
+  v->sens = v->currentSens = -1;
   v->typeTrain[0] = 0;
   v->typeTrain[1] = 0;
   v->typeTrain[2] = 1;
@@ -167,7 +175,7 @@ void init_voieMD(Voie* v){
   v->voieRight = malloc(sizeof(Voie*));
   v->voieRight[0] = &tabVoie[8];
 
-  v->sens = v->currentSens = 0;
+  v->sens = v->currentSens = 1;
   v->typeTrain[0] = 0;
   v->typeTrain[1] = 0;
   v->typeTrain[2] = 1;
@@ -238,8 +246,9 @@ void init_voieLIGNE(Voie* v){
   v->voieLeft = malloc(sizeof(Voie*));
   v->voieLeft[0] = &tabVoie[8];
 
-  v->voieRight = NULL;
-  v->nbVoieRight = 0;
+  v->nbVoieRight = 1;
+  v->voieRight = malloc(sizeof(Voie*));
+  v->voieRight[0] = &tabVoie[12];
 
   v->sens = v->currentSens = 0;
   v->typeTrain[0] = 1;

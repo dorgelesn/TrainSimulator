@@ -5,10 +5,10 @@ void initMutex(){
 }
 
 int main(int argc, char const *argv[]) {
-  int i;
+  int i, random;
 
   if (argc == 1) {
-    nbTrain = 10;
+    nbTrain = 2;
   }
   else{
     nbTrain = atoi(argv[1]);
@@ -35,7 +35,9 @@ int main(int argc, char const *argv[]) {
   tid = malloc((nbTrain)*sizeof(pthread_t));
 
   for (i = 0; i < (nbTrain); i++) {
-    pthread_create(&tid[i],0,(void *(*)())func_train, init_Train(i));
+    //ordonnancement thread
+    random = rand()%3+1;
+    pthread_create(&tid[i],0,(void *(*)())func_train, init_Train(i, random));
     //usleep(5000);
   }
 
@@ -47,7 +49,7 @@ int main(int argc, char const *argv[]) {
   /*for (i = NB_VOIE; i < (NB_VOIE+nbTrain); i++) {
     free(&tid[i]);
   }*/
-  //free(&tabVoie);
-  //free(&tid);
+  free(tabVoie);
+  free(tid);
   exit(0);
 }
