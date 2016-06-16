@@ -1,14 +1,17 @@
 #include "../include/global.h"
 
 void func_train(Train* trn){
-  printf("Création du Train %d qui part de %d et va %d\n",trn->id, trn->startPos->id,trn->sens);
+  printf("## Création du Train %d qui part de %d et va %d ##\n",trn->id, trn->startPos->id,trn->sens);
 
   while (trn->position != trn->endPos) {
     move(trn);
-    usleep(200000);
+    //usleep(200000);
   }
+  // for (int f = 0; f < NB_VOIE; f++) {
+  //   printf("Voie n°%d il y a %d trains\n", tabVoie[f].id, tabVoie[f].nbTrainAct);
+  // }
   pthread_mutex_lock(&mutex);
-  printf("Train %d est arrivé\n", trn->id);
+  printf(" >>> Train %d est arrivé <<<\n", trn->id);
   trn->position->nbTrainAct--;
   trn->position->reserve = false;
   trn->position->reserveId = -1;
@@ -27,42 +30,74 @@ void move(Train* train_train_quotidien){
       train_train_quotidien->position->nbTrainAct--;
       train_train_quotidien->position->reserve = false;
       train_train_quotidien->position->reserveId = -1;
-      pthread_cond_signal(&train_train_quotidien->position->voieLibre);
-      train_train_quotidien->position = nextVoie;
-      train_train_quotidien->position->nbTrainAct++;
-      printf("Le train %d est sur la voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
-      if (train_train_quotidien->position->id == 4) {
-        printf("petite PAUSE !\n");
-        usleep(5000000);
+      train_train_quotidien->position->currentSens = train_train_quotidien->position->sens;
 
+      pthread_cond_broadcast(&train_train_quotidien->position->voieLibre);
+      train_train_quotidien->position = nextVoie;
+      train_train_quotidien->position->currentSens = train_train_quotidien->sens;
+      train_train_quotidien->position->nbTrainAct++;
+
+      printf("Le Train n°%d est sur la Voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
+      if (train_train_quotidien->position->id == 4) {
+        printf("Nombre train sur 4 :  %d\n", train_train_quotidien->position->nbTrainAct);
+        //printf("########################### Sens train : %d\t\t\tSens Voie : %d\t\t\tSens courant : %d\n", train_train_quotidien->sens,train_train_quotidien->position->sens, train_train_quotidien->position->currentSens);
+        printf(" !!! Petite PAUSE au Garage !!!\n");
+        usleep(5000);
+
+      }else if (train_train_quotidien->position->id == 2) {
+        printf(" !!! Petite PAUSE à la Gare !!!\n");
+        usleep(5000);
       }
       usleep(50);
     }
   }
   pthread_mutex_unlock(&mutex);
+
+}
+
+/*
+ * Petite fonction permettant de réserver une voie et empêcher les autres véhicules de l'empreinter
+ */
+void makeReservation(Train* train_train_quotidien, Voie* nextVoie){
+  printf("Le Train n°%d a reservé la Voie n°%d\n", train_train_quotidien->id, nextVoie->id);
+  usleep(5000);
+  nextVoie->reserve = true;
+  nextVoie->reserveId = train_train_quotidien->id;
+  nextVoie->currentSens = train_train_quotidien->sens;
+  train_train_quotidien->reservationTab[train_train_quotidien->nbReservation] = nextVoie;
+  train_train_quotidien->nbReservation++;
+}
+
+void makeDereservation(Train* train_train_quotidien, Voie* nextVoie){
+
 }
 
 /*
  * Fonction de réservation qui test si les voies peuvent être empruntées
  */
 bool canStart(Train* train_train_quotidien){
+  bool inProgress = true;
   Voie* nextVoie = getNextVoieTRAIN(train_train_quotidien);
-  Voie* previousVoie = train_train_quotidien->position;
-  while (!nextVoie->canStop) {
+
+  while (inProgress){
     if ((nextVoie->reserve && nextVoie->reserveId != train_train_quotidien->id) || nextVoie->nbTrainAct == nextVoie->nbMaxTrain || (nextVoie->currentSens != 0 && nextVoie->currentSens != train_train_quotidien->sens)) {
-      printf("Le Train n°%d est en ATTENTE (Voie %d non libre)\n", train_train_quotidien->id, nextVoie->id);
-      pthread_cond_wait(&nextVoie->voieLibre, &mutex);
+
       for (int j = 0; j < train_train_quotidien->nbReservation; j++) {
         train_train_quotidien->reservationTab[j]->reserve = false;
         train_train_quotidien->reservationTab[j]->reserveId = -1;
+        train_train_quotidien->reservationTab[j]->currentSens = train_train_quotidien->reservationTab[j]->sens;
       }
+      train_train_quotidien->nbReservation = 0;
+      printf("Le Train n°%d est en ATTENTE (Voie %d non libre)\n", train_train_quotidien->id, nextVoie->id);
+      pthread_cond_wait(&nextVoie->voieLibre, &mutex);
+      nextVoie = train_train_quotidien->position;
+      printf("Le Train n°%d se réveille et recommence à réserver de %d \n\n",train_train_quotidien->id, nextVoie->id);
     }else{
-      printf("Voie N° %d reserved\n", nextVoie->id);
-      nextVoie->reserve = true;
-      nextVoie->reserveId = train_train_quotidien->id;
-      train_train_quotidien->reservationTab[train_train_quotidien->nbReservation] = nextVoie;
-      printf("ID de la nextvoie %d\t\t ID de reservation %d\n", nextVoie->id, train_train_quotidien->reservationTab[train_train_quotidien->nbReservation]->id);
-      train_train_quotidien->nbReservation++;
+      makeReservation(train_train_quotidien, nextVoie);
+      if (nextVoie->canStop || nextVoie->id == train_train_quotidien->endPos->id) {
+        printf("Arrêt réservation pour train n°%d\n", train_train_quotidien->id);
+        inProgress = false;
+      }
     }
     //printf("Next voie %d\n", nextVoie->id);
     nextVoie = getNextVoie(nextVoie, train_train_quotidien->sens, train_train_quotidien->priorite);
@@ -132,7 +167,7 @@ Train* init_Train(int i, int type, int sens){
     //    soit de la voie LIGNE pour aller vers la voie B (si sens = -1)
     if (train_train->sens == 1) {
       train_train->startPos = &tabVoie[0];
-      train_train->endPos = &tabVoie[9];
+      train_train->endPos = &tabVoie[12];
       train_train->position = calloc(1,sizeof(Voie));
       train_train->position = &tabVoie[10];
     }else{
@@ -147,7 +182,7 @@ Train* init_Train(int i, int type, int sens){
     //    soit de la voie LIGNE pour aller vers la voie C (si sens = -1)
     if (train_train->sens == 1) {
       train_train->startPos = &tabVoie[2];
-      train_train->endPos = &tabVoie[9];
+      train_train->endPos = &tabVoie[12];
       train_train->position = calloc(1,sizeof(Voie));
       train_train->position = &tabVoie[11];
     }else{

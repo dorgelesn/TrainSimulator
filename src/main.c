@@ -29,6 +29,8 @@ pthread_attr_t ordonnancement(pthread_attr_t tattr, struct sched_param param, in
   pthread_attr_init(&tattr);
   // Sauvegarde des paramètres actuels
   pthread_attr_getschedparam (&tattr, &param);
+  // Changement politique ordonnancement
+  pthread_attr_setschedpolicy(&tattr, SCHED_FIFO);
   // Changement priorité
   param.sched_priority = priority;
   // Application nouveau paramètres
@@ -53,9 +55,9 @@ int main(int argc, char const *argv[]) {
 
   //Paramètres du problème
   if (argc == 1) {
-    nbTGV = 3;
-    nbGL = 0;
-    nbM = 0;
+    nbTGV = 1000;
+    nbGL = 1000;
+    nbM = 1000;
   }
   else{
     nbTGV = atoi(argv[1]);
@@ -84,7 +86,12 @@ int main(int argc, char const *argv[]) {
   }
   for (i = (nbTGV+nbGL); i < (nbM+nbTGV+nbGL); i++) {
     tattr = ordonnancement(tattr, param, M_PRIORITY);
-    sens = 1;//randomSens();
+    if (i%2 == 1) {
+      sens = 1;
+    }else{
+      sens = -1;
+    }
+    //sens = 1;//randomSens();
     pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 2, sens));
     //usleep(5000);
   }

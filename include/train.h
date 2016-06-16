@@ -21,7 +21,8 @@ void func_train(Train* trn);
 Voie* getNextVoieTRAIN(Train* train_train_quotidien);
 Voie* getNextVoie(Voie* position, int sens, int priorite);
 void move(Train* train_train_quotidien);
-
+void makeReservation(Train* train_train_quotidien, Voie* nextVoie);
+void makeDereservation(Train* train_train_quotidien, Voie* nextVoie);
 bool canStart(Train* train_train_quotidien);
 
 Train* init_Train(int i, int type, int sens);
