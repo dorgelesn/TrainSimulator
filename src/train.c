@@ -5,6 +5,7 @@ void func_train(Train* trn){
 
   while (trn->position != trn->endPos) {
     move(trn);
+    usleep(200000);
   }
   pthread_mutex_lock(&mutex);
   printf("Train %d est arrivé\n", trn->id);
@@ -30,7 +31,12 @@ void move(Train* train_train_quotidien){
       train_train_quotidien->position = nextVoie;
       train_train_quotidien->position->nbTrainAct++;
       printf("Le train %d est sur la voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
-      usleep(5000);
+      if (train_train_quotidien->position->id == 4) {
+        printf("petite PAUSE !\n");
+        usleep(5000000);
+
+      }
+      usleep(50);
     }
   }
   pthread_mutex_unlock(&mutex);
@@ -46,12 +52,17 @@ bool canStart(Train* train_train_quotidien){
     if ((nextVoie->reserve && nextVoie->reserveId != train_train_quotidien->id) || nextVoie->nbTrainAct == nextVoie->nbMaxTrain || (nextVoie->currentSens != 0 && nextVoie->currentSens != train_train_quotidien->sens)) {
       printf("Le Train n°%d est en ATTENTE (Voie %d non libre)\n", train_train_quotidien->id, nextVoie->id);
       pthread_cond_wait(&nextVoie->voieLibre, &mutex);
-      /*while (previousVoie != train_train_quotidien->position) {
-      }*/
+      for (int j = 0; j < train_train_quotidien->nbReservation; j++) {
+        train_train_quotidien->reservationTab[j]->reserve = false;
+        train_train_quotidien->reservationTab[j]->reserveId = -1;
+      }
     }else{
       printf("Voie N° %d reserved\n", nextVoie->id);
       nextVoie->reserve = true;
       nextVoie->reserveId = train_train_quotidien->id;
+      train_train_quotidien->reservationTab[train_train_quotidien->nbReservation] = nextVoie;
+      printf("ID de la nextvoie %d\t\t ID de reservation %d\n", nextVoie->id, train_train_quotidien->reservationTab[train_train_quotidien->nbReservation]->id);
+      train_train_quotidien->nbReservation++;
     }
     //printf("Next voie %d\n", nextVoie->id);
     nextVoie = getNextVoie(nextVoie, train_train_quotidien->sens, train_train_quotidien->priorite);
@@ -102,65 +113,49 @@ void aiguillage(Train* trn){
 /*
  * Initialisation des Trains
  */
-Train* init_Train(int i, int random){
+Train* init_Train(int i, int type, int sens){
   Train* train_train = malloc(sizeof(Train));
-  //int random = rand()%3+1;
-  //random = 4;
-  //printf("%d\n", random);
-  switch (random) {
-    case 1:
-    {
-      //Train de marchandise qui part de la voie A et va vers la voie LIGNE
+  //type = 4;
+  //printf("%d\n", type);
+  train_train->id = i;
+  train_train->priorite = type;
+  train_train->sens = sens;
+  train_train->reservationTab = malloc(3*sizeof(Voie*));
+  train_train->nbReservation = 0;
+  for (int j = 0; j < 3; j++) {
+    train_train->reservationTab[j] = NULL;
+  }
+
+  if (type == 2) {
+    //Train M qui part :
+    //    soit de la voie A pour aller vers la voie LIGNE (si sens = 1)
+    //    soit de la voie LIGNE pour aller vers la voie B (si sens = -1)
+    if (train_train->sens == 1) {
       train_train->startPos = &tabVoie[0];
       train_train->endPos = &tabVoie[9];
       train_train->position = calloc(1,sizeof(Voie));
       train_train->position = &tabVoie[10];
-      //ajouter un compteur de train en attente ?
-      train_train->id = i;
-      train_train->sens = 1;
-      train_train->priorite = 2;
-    }
-    break;
-
-    case 2:
-    {
-      //Train TGV qui part de la voie C et va vers la voie LIGNE
-      train_train->startPos = &tabVoie[2];
-      train_train->endPos = &tabVoie[9];
-      train_train->position = calloc(1,sizeof(Voie));
-      train_train->position = &tabVoie[11];
-      train_train->id = i;
-      train_train->sens = 1;
-      train_train->priorite = 0;
-    }
-    break;
-
-    case 3:
-    {
-      //Train qui part de la voie LIGNE et va vers la gauche
-      train_train->startPos = &tabVoie[9];
-      train_train->endPos = &tabVoie[3];
-      train_train->position = calloc(1,sizeof(Voie));
-      train_train->position = &tabVoie[12];
-      train_train->id = i;
-      train_train->sens = -1;
-      train_train->priorite = (rand()%2);
-    }
-    break;
-
-    case 4:
-    {
-      //Train marchandise qui part de la voie LIGNE et va vers la gauche
+    }else{
       train_train->startPos = &tabVoie[9];
       train_train->endPos = &tabVoie[1];
       train_train->position = calloc(1,sizeof(Voie));
       train_train->position = &tabVoie[12];
-      train_train->id = i;
-      train_train->sens = -1;
-      train_train->priorite = 2;
     }
-    break;
-
+  }else{
+    //Train TGV ou GL qui part :
+    //    soit de la voie C pour aller vers la voie LIGNE (si sens = 1)
+    //    soit de la voie LIGNE pour aller vers la voie C (si sens = -1)
+    if (train_train->sens == 1) {
+      train_train->startPos = &tabVoie[2];
+      train_train->endPos = &tabVoie[9];
+      train_train->position = calloc(1,sizeof(Voie));
+      train_train->position = &tabVoie[11];
+    }else{
+      train_train->startPos = &tabVoie[9];
+      train_train->endPos = &tabVoie[3];
+      train_train->position = calloc(1,sizeof(Voie));
+      train_train->position = &tabVoie[12];
+    }
   }
   return train_train;
 }

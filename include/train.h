@@ -13,6 +13,8 @@ typedef struct {
   Voie* position;
   Voie* startPos;
   Voie* endPos;
+  Voie** reservationTab;
+  int nbReservation;
 }Train;
 
 void func_train(Train* trn);
@@ -22,6 +24,5 @@ void move(Train* train_train_quotidien);
 
 bool canStart(Train* train_train_quotidien);
 
-Train* init_Train(int i, int random);
-
+Train* init_Train(int i, int type, int sens);
 #endif

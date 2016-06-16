@@ -1,43 +1,91 @@
 #include "../include/global.h"
 
-void initMutex(){
+void initialisation(){
+  //Initialisation du mutex
   pthread_mutex_init(&mutex, NULL);
+
+  //Initialisation des voies
+  tabVoie = malloc(sizeof(Voie)*NB_VOIE);
+    init_voieA(&tabVoie[0]);
+    init_voieB(&tabVoie[1]);
+    init_voieC(&tabVoie[2]);
+    init_voieD(&tabVoie[3]);
+    init_voieTGV(&tabVoie[4]);
+    init_voieMG(&tabVoie[5]);
+    init_voieMD(&tabVoie[6]);
+    init_voieGL(&tabVoie[7]);
+    init_voieTUN(&tabVoie[8]);
+    init_voieLIGNE(&tabVoie[9]);
+    init_voieStartA(&tabVoie[10]);
+    init_voieStartC(&tabVoie[11]);
+    init_voieStartLIGNE(&tabVoie[12]);
+
+  //Initialisation tableau des threads de train
+  tid = malloc((nbTrain)*sizeof(pthread_t));
+}
+
+pthread_attr_t ordonnancement(pthread_attr_t tattr, struct sched_param param, int priority){
+  // Initialisation avec attributs par défaut
+  pthread_attr_init(&tattr);
+  // Sauvegarde des paramètres actuels
+  pthread_attr_getschedparam (&tattr, &param);
+  // Changement priorité
+  param.sched_priority = priority;
+  // Application nouveau paramètres
+  pthread_attr_setschedparam(&tattr, &param);
+
+  return tattr;
+}
+
+int randomSens(){
+  int s;
+  if ((rand()%2+1) == 1){
+    return (int)pow((-1),1);
+  }else{
+    return (int)pow((-1),2);
+  }
 }
 
 int main(int argc, char const *argv[]) {
-  int i, random;
+  int i, sens, typeTrain;
+  pthread_attr_t tattr;
+  struct sched_param param;
 
+  //Paramètres du problème
   if (argc == 1) {
-    nbTrain = 2;
+    nbTGV = 3;
+    nbGL = 0;
+    nbM = 0;
   }
   else{
-    nbTrain = atoi(argv[1]);
+    nbTGV = atoi(argv[1]);
+    nbGL = atoi(argv[2]);
+    nbM = atoi(argv[3]);
   }
+  nbTrain = nbTGV + nbGL + nbM;
 
-  initMutex();
+  initialisation();
 
-  //Initialisation tid
-  tabVoie = malloc(sizeof(Voie)*NB_VOIE);
-  init_voieA(&tabVoie[0]);
-  init_voieB(&tabVoie[1]);
-  init_voieC(&tabVoie[2]);
-  init_voieD(&tabVoie[3]);
-  init_voieTGV(&tabVoie[4]);
-  init_voieMG(&tabVoie[5]);
-  init_voieMD(&tabVoie[6]);
-  init_voieGL(&tabVoie[7]);
-  init_voieTUN(&tabVoie[8]);
-  init_voieLIGNE(&tabVoie[9]);
-  init_voieStartA(&tabVoie[10]);
-  init_voieStartC(&tabVoie[11]);
-  init_voieStartLIGNE(&tabVoie[12]);
-
-  tid = malloc((nbTrain)*sizeof(pthread_t));
-
-  for (i = 0; i < (nbTrain); i++) {
-    //ordonnancement thread
-    random = rand()%3+1;
-    pthread_create(&tid[i],0,(void *(*)())func_train, init_Train(i, random));
+  for (i = 0; i < nbTGV; i++) {
+    tattr = ordonnancement(tattr, param, TGV_PRIORITY);
+    if (i%2 == 1) {
+      sens = 1;
+    }else{
+      sens = -1;
+    }
+    pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 0, sens));
+    //usleep(5000);
+  }
+  for (i = nbTGV; i < (nbTGV+nbGL); i++) {
+    tattr = ordonnancement(tattr, param, GL_PRIORITY);
+    sens = -1;//randomSens();
+    pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 1, sens));
+    //usleep(5000);
+  }
+  for (i = (nbTGV+nbGL); i < (nbM+nbTGV+nbGL); i++) {
+    tattr = ordonnancement(tattr, param, M_PRIORITY);
+    sens = 1;//randomSens();
+    pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 2, sens));
     //usleep(5000);
   }
 
@@ -49,6 +97,7 @@ int main(int argc, char const *argv[]) {
   /*for (i = NB_VOIE; i < (NB_VOIE+nbTrain); i++) {
     free(&tid[i]);
   }*/
+  pthread_mutex_destroy(&mutex);
   free(tabVoie);
   free(tid);
   exit(0);
