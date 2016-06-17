@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><pnml>
+<net id="Net-One" type="P/T net">
+<token id="Default" enabled="true" red="0" green="0" blue="0"/>
+<place id="">
+<graphics>
+<position x="255.0" y="360.0"/>
+</graphics>
+<name>
+<value/>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,0</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<place id="GARAGE réservé">
+<graphics>
+<position x="345.0" y="420.0"/>
+</graphics>
+<name>
+<value>GARAGE réservé</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,0</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<place id="LIGNE réservée">
+<graphics>
+<position x="120.0" y="480.0"/>
+</graphics>
+<name>
+<value>LIGNE réservée</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,1</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<place id="Train Arrivé">
+<graphics>
+<position x="975.0" y="210.0"/>
+</graphics>
+<name>
+<value>Train Arrivé</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,0</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<place id="Train en attente du départ">
+<graphics>
+<position x="210.0" y="210.0"/>
+</graphics>
+<name>
+<value>Train en attente du départ</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,1</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<place id="Train en GARE">
+<graphics>
+<position x="645.0" y="210.0"/>
+</graphics>
+<name>
+<value>Train en GARE</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,0</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<place id="Train sur voie GARAGE">
+<graphics>
+<position x="435.0" y="215.0"/>
+</graphics>
+<name>
+<value>Train sur voie GARAGE</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,0</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<place id="TUNNEL réservé">
+<graphics>
+<position x="285.0" y="510.0"/>
+</graphics>
+<name>
+<value>TUNNEL réservé</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</name>
+<initialMarking>
+<value>Default,0</value>
+<graphics>
+<offset x="0.0" y="0.0"/>
+</graphics>
+</initialMarking>
+<capacity>
+<value>0</value>
+</capacity>
+</place>
+<transition id="GARAGE disponible">
+<graphics>
+<position x="420.0" y="540.0"/>
+</graphics>
+<name>
+<value>GARAGE disponible</value>
+<graphics>
+<offset x="-5.0" y="35.0"/>
+</graphics>
+</name>
+<orientation>
+<value>0</value>
+</orientation>
+<rate>
+<value>1.0</value>
+</rate>
+<timed>
+<value>true</value>
+</timed>
+<infiniteServer>
+<value>false</value>
+</infiniteServer>
+<priority>
+<value>1</value>
+</priority>
+</transition>
+<transition id="LIGNE disponible">
+<graphics>
+<position x="180.0" y="390.0"/>
+</graphics>
+<name>
+<value>LIGNE disponible</value>
+<graphics>
+<offset x="-5.0" y="35.0"/>
+</graphics>
+</name>
+<orientation>
+<value>0</value>
+</orientation>
+<rate>
+<value>1.0</value>
+</rate>
+<timed>
+<value>true</value>
+</timed>
+<infiniteServer>
+<value>false</value>
+</infiniteServer>
+<priority>
+<value>1</value>
+</priority>
+</transition>
+<transition id="Position finale atteinte">
+<graphics>
+<position x="810.0" y="210.0"/>
+</graphics>
+<name>
+<value>Position finale atteinte</value>
+<graphics>
+<offset x="-5.0" y="35.0"/>
+</graphics>
+</name>
+<orientation>
+<value>0</value>
+</orientation>
+<rate>
+<value>1.0</value>
+</rate>
+<timed>
+<value>true</value>
+</timed>
+<infiniteServer>
+<value>false</value>
+</infiniteServer>
+<priority>
+<value>1</value>
+</priority>
+</transition>
+<transition id="TUNNEL disponible">
+<graphics>
+<position x="180.0" y="555.0"/>
+</graphics>
+<name>
+<value>TUNNEL disponible</value>
+<graphics>
+<offset x="-5.0" y="35.0"/>
+</graphics>
+</name>
+<orientation>
+<value>0</value>
+</orientation>
+<rate>
+<value>1.0</value>
+</rate>
+<timed>
+<value>true</value>
+</timed>
+<infiniteServer>
+<value>false</value>
+</infiniteServer>
+<priority>
+<value>1</value>
+</priority>
+</transition>
+<transition id="Voie jusqu'à GARAGE disponible">
+<graphics>
+<position x="330.0" y="230.0"/>
+</graphics>
+<name>
+<value>Voie jusqu'à GARAGE disponible</value>
+<graphics>
+<offset x="-5.0" y="35.0"/>
+</graphics>
+</name>
+<orientation>
+<value>0</value>
+</orientation>
+<rate>
+<value>1.0</value>
+</rate>
+<timed>
+<value>true</value>
+</timed>
+<infiniteServer>
+<value>false</value>
+</infiniteServer>
+<priority>
+<value>1</value>
+</priority>
+</transition>
+<transition id="Voie jusqu'à GARE disponible">
+<graphics>
+<position x="555.0" y="240.0"/>
+</graphics>
+<name>
+<value>Voie jusqu'à GARE disponible</value>
+<graphics>
+<offset x="-5.0" y="35.0"/>
+</graphics>
+</name>
+<orientation>
+<value>0</value>
+</orientation>
+<rate>
+<value>1.0</value>
+</rate>
+<timed>
+<value>true</value>
+</timed>
+<infiniteServer>
+<value>false</value>
+</infiniteServer>
+<priority>
+<value>1</value>
+</priority>
+</transition>
+<arc id="GARAGE disponible to GARAGE réservé" source="GARAGE disponible" target="GARAGE réservé">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="427" y="547" curvePoint="false"/>
+<arcpath id="001" x="364" y="444" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="GARAGE réservé to LIGNE disponible" source="GARAGE réservé" target="LIGNE disponible">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="344" y="423" curvePoint="false"/>
+<arcpath id="001" x="267" y="372" curvePoint="false"/>
+<arcpath id="002" x="196" y="402" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="GARAGE réservé to Voie jusqu'à GARAGE disponible" source="GARAGE réservé" target="Voie jusqu'à GARAGE disponible">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="355" y="417" curvePoint="false"/>
+<arcpath id="001" x="342" y="257" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="LIGNE disponible to LIGNE réservée" source="LIGNE disponible" target="LIGNE réservée">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="186" y="402" curvePoint="false"/>
+<arcpath id="001" x="139" y="479" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="LIGNE réservée to TUNNEL disponible" source="LIGNE réservée" target="TUNNEL disponible">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="140" y="504" curvePoint="false"/>
+<arcpath id="001" x="186" y="567" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="Position finale atteinte to Train Arrivé" source="Position finale atteinte" target="Train Arrivé">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="826" y="222" curvePoint="false"/>
+<arcpath id="001" x="972" y="222" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="Train en GARE to Position finale atteinte" source="Train en GARE" target="Position finale atteinte">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="671" y="222" curvePoint="false"/>
+<arcpath id="001" x="816" y="222" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="Train sur voie GARAGE to Voie jusqu'à GARE disponible" source="Train sur voie GARAGE" target="Voie jusqu'à GARE disponible">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="461" y="230" curvePoint="false"/>
+<arcpath id="001" x="561" y="252" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="TUNNEL disponible to TUNNEL réservé" source="TUNNEL disponible" target="TUNNEL réservé">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="196" y="567" curvePoint="false"/>
+<arcpath id="001" x="283" y="528" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="TUNNEL réservé to GARAGE disponible" source="TUNNEL réservé" target="GARAGE disponible">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="311" y="525" curvePoint="false"/>
+<arcpath id="001" x="426" y="557" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="Voie jusqu'à GARAGE disponible to Train en attente du départ" source="Voie jusqu'à GARAGE disponible" target="Train en attente du départ">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="342" y="257" curvePoint="false"/>
+<arcpath id="001" x="342" y="327" curvePoint="false"/>
+<arcpath id="002" x="222" y="327" curvePoint="false"/>
+<arcpath id="003" x="222" y="252" curvePoint="false"/>
+<arcpath id="004" x="222" y="237" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="Voie jusqu'à GARAGE disponible to Train sur voie GARAGE" source="Voie jusqu'à GARAGE disponible" target="Train sur voie GARAGE">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="346" y="242" curvePoint="false"/>
+<arcpath id="001" x="432" y="229" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="Voie jusqu'à GARE disponible to Train en GARE" source="Voie jusqu'à GARE disponible" target="Train en GARE">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="571" y="252" curvePoint="false"/>
+<arcpath id="001" x="642" y="227" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+<arc id="Voie jusqu'à GARE disponible to Train sur voie GARAGE" source="Voie jusqu'à GARE disponible" target="Train sur voie GARAGE">
+<graphics/>
+<inscription>
+<value>Default,1</value>
+<graphics/>
+</inscription>
+<tagged>
+<value>false</value>
+</tagged>
+<arcpath id="000" x="567" y="267" curvePoint="false"/>
+<arcpath id="001" x="567" y="342" curvePoint="false"/>
+<arcpath id="002" x="447" y="342" curvePoint="false"/>
+<arcpath id="003" x="447" y="242" curvePoint="false"/>
+<type value="normal"/>
+</arc>
+</net>
+</pnml>

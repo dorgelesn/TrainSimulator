@@ -11,7 +11,7 @@
 \usepackage[top=2.5cm,bottom=2.5cm,right=2.5cm,left=2.5cm]{geometry} 
 \usepackage{minted}
 \author{SENE Victor } 
-\title{Transshipment problem} 
+\title{Train-Simulation} 
 \graphicspath{{img/}} 
 \usepackage{fancyhdr} 
 \pagestyle{fancy} 
@@ -105,13 +105,30 @@ Dans notre sujet nous tiendrons compte des priorités que chaque train possède,
 		À la fin du programme ou lors de son interruption volontaire, je libère la mémoire allouée pour les différents tableaux et je nettoie aussi les mutex et conditions pour les moniteurs des voies.
 
 \section{Conception}
-	%Appropiation du sujet ?
+
 	\subsection{Réseau de pétri}
 	Durant ma phase de conception, j'ai pu utiliser un des outils proposé en cours afin de modéliser le fonctionnement de certain point critique de la simulation.
-	Voici un exemple de déplacement :
+	Voici un exemple de déplacement d'un TGV qui part de LIGNE et qui va vers la GARE:
 	
-	%\includegraphics[width=0.9\textwidth]{./logo}~\\[0.5cm]
-	
+	\includegraphics[width=1.0\textwidth]{./exPetri.png}~\\[0.1cm]
+	\subsection{Système de Réservation}
+	Le principal élément permettant d'éviter l'interblocage est le système de réservation. Alors pour cela j'utilise un booléen sur la voie et un tableau stockant les réservations en cours dans une structure de train. En pseudo-code le fonctionnement de la réservation serait ainsi :
+	\begin{minted}{C}	
+	TANT QUE on est pas sur un voie pour arreter le train
+		SI la voie est pas reserve par moi 
+		OU SI la voie est pleine 
+		OU SI le sens courant de la voie ne me convient pas ALORS
+			On reinitialise le tableau de reservation du train
+			On attend que la voie soit libre
+			On reprend la reservation de la position du train
+		
+		SINON 
+			On reserve la voie
+		FIN SI
+		
+		On va tester la reservation sur la voie suivante
+	FIN TANT QUE
+	\end{minted}
 	\subsection{Structures}
 		\subsubsection{Les voies}
 		Pour circuler en train il préférable de le faire sur des voies prévues à cette effet. Si ici elle ne sont pas modéliser physiquement par l'intermédiaire d'un Thread ou d'un processus, les voies sont basées sur une même structures. Celles-ci sont créées et initialisées selon leurs spécificités au lancement du programme.
@@ -184,7 +201,7 @@ pthread_attr_t ordonnancement(pthread_attr_t tattr, struct sched_param param, in
 	
 	return tattr;
 }
-		\end{minted}
+		\end{minted}	
 	\subsection{Constantes \& Variables globales}
 	J'utilise des constantes globales pour pouvoir faire éventuellement évolué le réseau ferré.
 	\begin{minted}{C}
