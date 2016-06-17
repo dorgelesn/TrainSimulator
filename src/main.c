@@ -55,9 +55,9 @@ int main(int argc, char const *argv[]) {
 
   //Paramètres du problème
   if (argc == 1) {
-    nbTGV = 1000;
-    nbGL = 1000;
-    nbM = 1000;
+    nbTGV = 2;
+    nbGL = 2;
+    nbM = 2;
   }
   else{
     nbTGV = atoi(argv[1]);
@@ -71,11 +71,7 @@ int main(int argc, char const *argv[]) {
   for (i = 0; i < nbTGV; i++) {
     //Création des TGV
     tattr = ordonnancement(tattr, param, TGV_PRIORITY);
-    if (i%2 == 1) {
-      sens = 1;
-    }else{
-      sens = -1;
-    }
+    sens = randomSens();
     pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 0, sens));
     //usleep(5000);
   }
@@ -89,12 +85,7 @@ int main(int argc, char const *argv[]) {
   //Création des trains de Marchandises (M)
   for (i = (nbTGV+nbGL); i < (nbM+nbTGV+nbGL); i++) {
     tattr = ordonnancement(tattr, param, M_PRIORITY);
-    if (i%2 == 1) {
-      sens = 1;
-    }else{
-      sens = -1;
-    }
-    //sens = 1;//randomSens();
+    sens = randomSens();
     pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 2, sens));
     //usleep(5000);
   }
@@ -108,6 +99,7 @@ int main(int argc, char const *argv[]) {
     free(&tid[i]);
   }*/
   pthread_mutex_destroy(&mutex);
+  
   free(tabVoie);
   free(tid);
   exit(0);

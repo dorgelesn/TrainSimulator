@@ -9,14 +9,13 @@
 #include <math.h>
 #include <time.h>
 
-#include "aiguillage.h"
 #include "voie.h"
 #include "train.h"
 
 #define NB_VOIE 13
 #define NB_AIGUILLAGE 4
 #define MAX_TRAIN 10000000
-#define TGV_PRIORITY 100
+#define TGV_PRIORITY 98
 #define GL_PRIORITY 50
 #define M_PRIORITY 10
 

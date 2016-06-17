@@ -24,14 +24,20 @@ void move(Train* train_train_quotidien){
   if (nextVoie != NULL) {
     if (canStart(train_train_quotidien)) {
       printf("Le Train n°%d départ de la voie %d pour aller vers %d\n", train_train_quotidien->id, train_train_quotidien->position->id, nextVoie->id);
+      // On enlève le train de la voie actuelle
       train_train_quotidien->position->nbTrainAct--;
+      // On enlève la réservation sur la voie qu'on va quitter
       train_train_quotidien->position->reserve = false;
       train_train_quotidien->position->reserveId = -1;
+      // On réinitialise le sens courant de la voie
       train_train_quotidien->position->currentSens = train_train_quotidien->position->sens;
 
       pthread_cond_broadcast(&train_train_quotidien->position->voieLibre); // le broadcast est une précaution si jamais il y a des trains qui pourraient ne jamais être réveillés.
+      // ça y est le train a officiellement changé de voie :)
       train_train_quotidien->position = nextVoie;
+      // On adapte le sens de la voie
       train_train_quotidien->position->currentSens = train_train_quotidien->sens;
+      // On ajoute le train dans le décompte de la voie
       train_train_quotidien->position->nbTrainAct++;
 
       printf("Le Train n°%d est sur la Voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
@@ -58,9 +64,11 @@ void move(Train* train_train_quotidien){
 void makeReservation(Train* train_train_quotidien, Voie* nextVoie){
   printf("Le Train n°%d a reservé la Voie n°%d\n", train_train_quotidien->id, nextVoie->id);
   usleep(5000);
+  // reservation de la voie
   nextVoie->reserve = true;
   nextVoie->reserveId = train_train_quotidien->id;
   nextVoie->currentSens = train_train_quotidien->sens;
+  // ajout de la voie à la liste de réservation du train
   train_train_quotidien->reservationTab[train_train_quotidien->nbReservation] = nextVoie;
   train_train_quotidien->nbReservation++;
 }
@@ -74,7 +82,7 @@ bool canStart(Train* train_train_quotidien){
 
   while (inProgress){
     if ((nextVoie->reserve && nextVoie->reserveId != train_train_quotidien->id) || nextVoie->nbTrainAct == nextVoie->nbMaxTrain || (nextVoie->currentSens != 0 && nextVoie->currentSens != train_train_quotidien->sens)) {
-
+      // On réinitialise le tableau de réservation du train
       for (int j = 0; j < train_train_quotidien->nbReservation; j++) {
         train_train_quotidien->reservationTab[j]->reserve = false;
         train_train_quotidien->reservationTab[j]->reserveId = -1;
@@ -101,7 +109,7 @@ bool canStart(Train* train_train_quotidien){
 }
 
 /*
- * Recherche de la prochaine voie après celle actuelle
+ * Recherche de la voie suivante par rapport à la position du train
  */
 Voie* getNextVoieTRAIN(Train* train_train_quotidien) {
   return getNextVoie(train_train_quotidien->position, train_train_quotidien->sens, train_train_quotidien->priorite);
@@ -131,12 +139,6 @@ Voie* getNextVoie(Voie* position, int sens, int priorite) {
   return NULL;
 }
 
-/*
- * Recherche d'autorisation pour rouler
- */
-void aiguillage(Train* trn){
-
-}
 
 /*
  * Initialisation des Trains
