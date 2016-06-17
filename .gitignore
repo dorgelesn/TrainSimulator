@@ -51,4 +51,9 @@
 
 # Other
 *.odt
-*.pdf
+
+# Latex
+*.aux
+*.log
+*.synctex.gz
+*.toc
