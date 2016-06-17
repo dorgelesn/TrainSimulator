@@ -33,12 +33,17 @@ void armagedon() {
     free(tabVoie[i].voieRight);
   }
   free(tabVoie);
-  /*for (int i = 0; i < nbTrain; i++) {
+}
+
+void armagedonSurCommande() {
+  armagedon();
+  for (int i = 0; i < nbTrain; i++) {
     if (tid[i] != (pthread_t)NULL) {
       pthread_cancel(tid[i]);
     }
-  }*/
+  }
   free(tid);
+  raise(SIGINT);
 }
 
 pthread_attr_t ordonnancement(pthread_attr_t tattr, struct sched_param param, int priority){
@@ -69,7 +74,12 @@ int main(int argc, char const *argv[]) {
   int i, sens, typeTrain;
   pthread_attr_t tattr;
   struct sched_param param;
+  struct sigaction sig;
 
+  srand(time(NULL));
+  sig.sa_flags = SA_SIGINFO | SA_RESETHAND;
+  sig.sa_sigaction = armagedonSurCommande;
+  sigaction(SIGINT,&sig,NULL);
   //Paramètres du problème
   if (argc == 1) {
     nbTGV = 2;
@@ -85,8 +95,8 @@ int main(int argc, char const *argv[]) {
 
   initialisation();
 
+  //Création des TGV
   for (i = 0; i < nbTGV; i++) {
-    //Création des TGV
     tattr = ordonnancement(tattr, param, TGV_PRIORITY);
     sens = randomSens();
     pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 0, sens));
@@ -112,5 +122,6 @@ int main(int argc, char const *argv[]) {
   }
 
   armagedon();
+  free(tid);
   exit(0);
 }
