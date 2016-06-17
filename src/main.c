@@ -24,6 +24,23 @@ void initialisation(){
   tid = malloc((nbTrain)*sizeof(pthread_t));
 }
 
+void armagedon() {
+  // Nettoyage voie
+  pthread_mutex_destroy(&mutex);
+  for (int i = 0; i < NB_VOIE; i++) {
+    pthread_cond_destroy(&tabVoie[i].voieLibre);
+    free(tabVoie[i].voieLeft);
+    free(tabVoie[i].voieRight);
+  }
+  free(tabVoie);
+  /*for (int i = 0; i < nbTrain; i++) {
+    if (tid[i] != (pthread_t)NULL) {
+      pthread_cancel(tid[i]);
+    }
+  }*/
+  free(tid);
+}
+
 pthread_attr_t ordonnancement(pthread_attr_t tattr, struct sched_param param, int priority){
   // Initialisation avec attributs par défaut
   pthread_attr_init(&tattr);
@@ -94,13 +111,6 @@ int main(int argc, char const *argv[]) {
     pthread_join(tid[i],NULL);
   }
 
-  //penser à delete les malloc
-  /*for (i = NB_VOIE; i < (NB_VOIE+nbTrain); i++) {
-    free(&tid[i]);
-  }*/
-  pthread_mutex_destroy(&mutex);
-  
-  free(tabVoie);
-  free(tid);
+  armagedon();
   exit(0);
 }
