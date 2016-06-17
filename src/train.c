@@ -5,11 +5,8 @@ void func_train(Train* trn){
 
   while (trn->position != trn->endPos) {
     move(trn);
-    //usleep(200000);
+    usleep(200000);
   }
-  // for (int f = 0; f < NB_VOIE; f++) {
-  //   printf("Voie n°%d il y a %d trains\n", tabVoie[f].id, tabVoie[f].nbTrainAct);
-  // }
   pthread_mutex_lock(&mutex);
   printf(" >>> Train %d est arrivé <<<\n", trn->id);
   trn->position->nbTrainAct--;
@@ -26,20 +23,20 @@ void move(Train* train_train_quotidien){
   Voie* nextVoie = getNextVoieTRAIN(train_train_quotidien);
   if (nextVoie != NULL) {
     if (canStart(train_train_quotidien)) {
-      printf("Le train n°%d départ de la voie %d pour aller vers %d\n", train_train_quotidien->id, train_train_quotidien->position->id, nextVoie->id);
+      printf("Le Train n°%d départ de la voie %d pour aller vers %d\n", train_train_quotidien->id, train_train_quotidien->position->id, nextVoie->id);
       train_train_quotidien->position->nbTrainAct--;
       train_train_quotidien->position->reserve = false;
       train_train_quotidien->position->reserveId = -1;
       train_train_quotidien->position->currentSens = train_train_quotidien->position->sens;
 
-      pthread_cond_broadcast(&train_train_quotidien->position->voieLibre);
+      pthread_cond_broadcast(&train_train_quotidien->position->voieLibre); // le broadcast est une précaution si jamais il y a des trains qui pourraient ne jamais être réveillés.
       train_train_quotidien->position = nextVoie;
       train_train_quotidien->position->currentSens = train_train_quotidien->sens;
       train_train_quotidien->position->nbTrainAct++;
 
       printf("Le Train n°%d est sur la Voie %d\n", train_train_quotidien->id, train_train_quotidien->position->id);
       if (train_train_quotidien->position->id == 4) {
-        printf("Nombre train sur 4 :  %d\n", train_train_quotidien->position->nbTrainAct);
+        //printf("Nombre train sur 4 :  %d\n", train_train_quotidien->position->nbTrainAct);
         //printf("########################### Sens train : %d\t\t\tSens Voie : %d\t\t\tSens courant : %d\n", train_train_quotidien->sens,train_train_quotidien->position->sens, train_train_quotidien->position->currentSens);
         printf(" !!! Petite PAUSE au Garage !!!\n");
         usleep(5000);
@@ -68,10 +65,6 @@ void makeReservation(Train* train_train_quotidien, Voie* nextVoie){
   train_train_quotidien->nbReservation++;
 }
 
-void makeDereservation(Train* train_train_quotidien, Voie* nextVoie){
-
-}
-
 /*
  * Fonction de réservation qui test si les voies peuvent être empruntées
  */
@@ -91,7 +84,7 @@ bool canStart(Train* train_train_quotidien){
       printf("Le Train n°%d est en ATTENTE (Voie %d non libre)\n", train_train_quotidien->id, nextVoie->id);
       pthread_cond_wait(&nextVoie->voieLibre, &mutex);
       nextVoie = train_train_quotidien->position;
-      printf("Le Train n°%d se réveille et recommence à réserver de %d \n\n",train_train_quotidien->id, nextVoie->id);
+      printf("Le Train n°%d se REVEILLE et recommence à réserver de %d \n\n",train_train_quotidien->id, nextVoie->id);
     }else{
       makeReservation(train_train_quotidien, nextVoie);
       if (nextVoie->canStop || nextVoie->id == train_train_quotidien->endPos->id) {

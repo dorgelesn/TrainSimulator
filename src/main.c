@@ -69,6 +69,7 @@ int main(int argc, char const *argv[]) {
   initialisation();
 
   for (i = 0; i < nbTGV; i++) {
+    //Création des TGV
     tattr = ordonnancement(tattr, param, TGV_PRIORITY);
     if (i%2 == 1) {
       sens = 1;
@@ -78,12 +79,14 @@ int main(int argc, char const *argv[]) {
     pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 0, sens));
     //usleep(5000);
   }
+  //Création des trains de Grandes Lignes (GL)
   for (i = nbTGV; i < (nbTGV+nbGL); i++) {
     tattr = ordonnancement(tattr, param, GL_PRIORITY);
-    sens = -1;//randomSens();
+    sens = randomSens();
     pthread_create(&tid[i],&tattr,(void *(*)())func_train, init_Train(i, 1, sens));
     //usleep(5000);
   }
+  //Création des trains de Marchandises (M)
   for (i = (nbTGV+nbGL); i < (nbM+nbTGV+nbGL); i++) {
     tattr = ordonnancement(tattr, param, M_PRIORITY);
     if (i%2 == 1) {
